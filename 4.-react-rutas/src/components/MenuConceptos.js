@@ -30,6 +30,24 @@ const MenuConceptos = () => {
                     <Link to="/usuario/jon">jon</Link>
                     <Link to="/usuario/dallas">dallas</Link>
                 </li>
+                <li>
+                    <span>Parametros de Consulta </span>
+                    <Link to="/productos">Productos</Link>
+                </li>
+                <li>
+                    <span>Redirecciones: </span>
+                    <Link to="/about">About</Link>
+                    <Link to="/contact">Contact</Link>
+                </li>
+                <li>
+                    <span>Rutas Anidadas: </span>
+                    <Link to="/react">React</Link>
+                </li>
+                <li>
+                    <span>Rutas Privadas: </span>
+                    <Link to="/login">Login</Link>
+                    <Link to="/dashboard">Dashboard</Link>
+                </li>
             </ol>
         </nav>
     )
