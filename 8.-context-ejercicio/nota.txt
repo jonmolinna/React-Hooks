@@ -1,0 +1,4 @@
+  
+Para trabajar con JSON Server
+1.- instalar npm install json-server
+npm run fake-api
