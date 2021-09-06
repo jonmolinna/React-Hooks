@@ -6,28 +6,59 @@ import RateReviewOutlinedIcon from '@material-ui/icons/RateReviewOutlined';
 import SidebarChat from './SidebarChat';
 import { useSelector } from 'react-redux';
 import { selectUser } from './features/userSlice';
-import db, { auth } from './firebase';
+//import db, { auth } from './firebase';
+
+import axios from './axios';
+import Pusher from 'pusher-js';
+
+const pusher = new Pusher('5354e85537ec2bfe4703', {
+    cluster: 'us2'
+});
 
 const Sidebar = () => {
     const user = useSelector(selectUser);
     const [chats, setChats] = useState([]);
 
+    const getChats = () => {
+        axios.get('/get/conversationList')
+            .then(res => {
+                setChats(res.data)
+            })
+    };
+
     useEffect(() => {
-        db.collection("chats").onSnapshot(snapshot => setChats(
-            snapshot.docs,map(doc => ({
-                id: doc.id,
-                data: doc.data(),
-            }))
-        ));
+        getChats();
+
+        const channel = pusher.subscribe('chats');
+        channel.bind('newChat', function(data){
+            getChats();
+        });
     }, []);
 
-    const addChat = () => {
-        const chatName = prompt("Ingrese un Nombre de Chat");
+    const addChat = (e) => {
+        e.preventDefault();
+        
+        const chatName = prompt('Please enter a chat name');
+        const firstMsg = prompt('Plase send a welcome message');
 
-        if(chatName){
-            db.collection("chats").add({
-                chatName: chatName,
-            });
+        if(chatName && firstMsg){
+            let chatId = ''
+
+            axios
+                .get('/new/conversation', {
+                    chatName: chatName
+                })
+                .then(res => {
+                    chatId = res.data._id
+                })
+                .then(() => {
+                    axios.post(`/new/message?id=${chatId}`, {
+                        message: firstMsg,
+                        timestamp: Date.now(),
+                        user: user
+                    })
+                }
+            )
         }
     };
 
@@ -37,7 +68,7 @@ const Sidebar = () => {
                 <Avatar 
                     className="sidebar__avatar"
                     src={user.photo}
-                    onClick={() => auth.signOut()}
+                    // onClick={() => auth.signOut()}
                 />
                 <div className="sidebar__input">
                     <SearchIcon />
@@ -50,8 +81,13 @@ const Sidebar = () => {
 
             <div className="sidebar__chats">
                 {
-                    chats.map(({ id, data: { chatName }}) => (
-                        <SidebarChat key={id} id={id} chatName={chatName} />
+                    chats.map(({ id, name, timestamp }) => (
+                        <SidebarChat 
+                            key={id} 
+                            id={id} 
+                            chatName={name}
+                            timestamp={timestamp} 
+                        />
                     ))
                 }
             </div>

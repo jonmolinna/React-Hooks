@@ -4,11 +4,18 @@ import { IconButton } from '@material-ui/core'
 import MicNoneIcon from '@material-ui/icons/MicNone';
 import { useSelector } from 'react-redux';
 import { selectChatId, selectChatName } from './features/chatSlice';
-import db from './firebase';
-import firebase from 'firebase';
+//import db from './firebase';
+//import firebase from 'firebase';
 import { selectUser } from './features/userSlice';
 import Message from './Message';
 import FlipMove from 'react-flip-move';
+
+import axios from './axios';
+import Pusher from 'pusher-js';
+
+const pusher = new Pusher('5354e85537ec2bfe4703', {
+    cluster: 'us2'
+});
 
 const Chat = () => {
     const user = useSelector(selectUser);
@@ -17,34 +24,35 @@ const Chat = () => {
     const chatId = useSelector(selectChatId);
     const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
+    const getConversation = (chatId) => {
         if(chatId){
-            db.collection("chats")
-                .doc(chatId)
-                .collection("messages")
-                .orderBy("timestamp", "desc")
-                .onSnapshot(snapshot => setMessages(
-                    snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        data: doc.data(),
-                    }))
-                ))
+            axios.get(`/get/conversation?id=${chatId}`).then(res => {
+                setMessages(res.data[0].conversation)
+            })
         }
+    };
+
+    useEffect(() => {
+        pusher.unsubscribe('messages')
+
+        getConversation(chatId);
+
+        const channel = pusher.subscribe('messages');
+        channel.bind('newMessage', function(data){
+            getConversation(chatId)
+        });
     }, [chatId]);
 
     const sendMessage = (e) => {
         e.preventDefault();
 
-        db.collection("chats").doc(chatId).collection("messages").add({
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        axios.get(`/new/message?id=${chatId}`, {
             message: input,
-            uid: user.uid,
-            photo: user.photo,
-            email: user.email,
-            displayName: user.displayName,
-        });
+            timestamp: Date.now(),
+            user: user
+        })
 
-        setInput("");        
+        setInput("");
     };
 
     return (
@@ -57,8 +65,8 @@ const Chat = () => {
             <div className="chat__messages">
                 <FlipMove>
                     {
-                        messages.map(({ id, data }) => (
-                            <Message key={id} contents={data} />
+                        messages.map(({ user, _id, message, timestamp }) => (
+                            <Message key={_id} id={_id} sender={user} message={message} timestamp={timestamp} />
                         ))
                     }
                 </FlipMove>
@@ -82,4 +90,4 @@ const Chat = () => {
     )
 }
 
-export default Chat
+export default Chat;
