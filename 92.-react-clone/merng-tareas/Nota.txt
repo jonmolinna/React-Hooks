@@ -1,0 +1,8 @@
+Frontend
+---------------------------------
+npm install react-router-dom
+npm install react-bootstrap bootstrap
+npm install react-hook-form
+npm install yup
+npm install @hookform/resolvers
+npm install --save react-toastify
