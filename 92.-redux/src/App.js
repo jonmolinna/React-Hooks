@@ -3,6 +3,7 @@ import './App.css';
 import { Provider } from 'react-redux';
 import store from './store';
 import Contador from './componentes/Contador';
+import ShoppingCart from './componentes/ShoppingCart';
 
 function App() {
   return (
@@ -10,6 +11,8 @@ function App() {
       <div style={{textAlign: "center"}}>
         <h1>Redux</h1>
         <Contador />
+        <hr />
+        <ShoppingCart />
         <hr />
       </div>
     </Provider>
