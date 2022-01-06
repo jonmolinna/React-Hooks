@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import Contador from './componentes/Contador';
 import ShoppingCart from './componentes/ShoppingCart';
+import CrudApi from './componentes/CrudApi';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <hr />
         <ShoppingCart />
         <hr />
+        <CrudApi />
       </div>
     </Provider>
   );

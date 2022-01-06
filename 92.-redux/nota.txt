@@ -1,3 +1,4 @@
 npm install redux
 npm install redux-devtools
 npm install react-redux
+npm install json-server
