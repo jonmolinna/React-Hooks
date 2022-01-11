@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { fetchAllUsers } from '../store/slices/users';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -9,8 +9,6 @@ const UserList = () => {
     useEffect(() => {
         dispatch(fetchAllUsers());
     }, [dispatch]);
-
-    console.log('HOLA')
 
     return (
         <div className='container mt-4'>
