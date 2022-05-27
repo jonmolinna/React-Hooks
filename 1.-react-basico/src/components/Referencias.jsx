@@ -1,6 +1,7 @@
-import React, { createRef, useRef } from 'react';
+import React, {  useRef } from 'react';
 
 export default function Referencias(){
+    // import React, { createRef, useRef } from 'react';
     //let refMenu = createRef(); // Esto se usa en un componente de clase
     let refMenu = useRef();
     let refMenuBtn = useRef(); 
@@ -35,15 +36,15 @@ export default function Referencias(){
             <h2>Referencias</h2>
             <button id="menu-btn" ref={refMenuBtn} onClick={handleToggleMenu}>Menu</button>
             <nav id="menu" ref={refMenu} style={{ display: "none"}}>
-                <a href="#">Seccion 1</a>
+                <a href="index.html">Seccion 1</a>
                 <br />
-                <a href="#">Seccion 2</a>
+                <a href="index.html">Seccion 2</a>
                 <br />
-                <a href="#">Seccion 3</a>
+                <a href="index.html">Seccion 3</a>
                 <br />
-                <a href="#">Seccion 4</a>
+                <a href="index.html">Seccion 4</a>
                 <br />
-                <a href="#">Seccion 5</a>
+                <a href="index.html">Seccion 5</a>
             </nav>
         </>
     )
